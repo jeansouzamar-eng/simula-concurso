@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum UserTipo {
+  ALUNO
+  ADMIN
+}
+
+enum UserPlano {
+  GRATIS
+  PREMIUM
+}
+
+enum Dificuldade {
+  FACIL
+  MEDIA
+  DIFICIL
+}
+
+enum NivelSimulado {
+  FACIL
+  INTERMEDIARIO
+  AVANCADO
+}
+
+model User {
+  id          String      @id @default(cuid())
+  nome        String
+  email       String      @unique
+  senhaHash   String
+  tipo        UserTipo    @default(ALUNO)
+  plano       UserPlano   @default(GRATIS)
+  premiumAt   DateTime?
+  mercadoPagoPaymentId String?
+  resultados  Resultado[]
+  respostas   Resposta[]
+  payments    Payment[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("users")
+}
+
+model Payment {
+  id                    String   @id @default(cuid())
+  userId                String
+  mercadoPagoPaymentId String   @unique
+  status                String
+  amount                Decimal  @db.Decimal(10, 2)
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("payments")
+}
+
+model Materia {
+  id        String     @id @default(cuid())
+  nome      String     @unique
+  questoes  Questao[]
+  simulados Simulado[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("materias")
+}
+
+model Banca {
+  id        String     @id @default(cuid())
+  nome      String     @unique
+  questoes  Questao[]
+  simulados Simulado[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("bancas")
+}
+
+model Questao {
+  id                 String             @id @default(cuid())
+  enunciado          String             @db.Text
+  alternativaA       String             @db.Text
+  alternativaB       String             @db.Text
+  alternativaC       String             @db.Text
+  alternativaD       String             @db.Text
+  alternativaCorreta String             @db.VarChar(1)
+  explicacao         String             @db.Text
+  dificuldade        Dificuldade        @default(MEDIA)
+  materiaId          String
+  bancaId            String
+  materia            Materia            @relation(fields: [materiaId], references: [id])
+  banca              Banca              @relation(fields: [bancaId], references: [id])
+  simulados          SimuladoQuestao[]
+  respostas          Resposta[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@map("questoes")
+}
+
+model Simulado {
+  id                 String             @id @default(cuid())
+  titulo             String
+  descricao          String             @db.Text
+  tempoLimite        Int
+  nivel              NivelSimulado      @default(INTERMEDIARIO)
+  quantidadeQuestoes Int
+  isPremium          Boolean            @default(false)
+  materiaId          String
+  bancaId            String?
+  materia            Materia            @relation(fields: [materiaId], references: [id])
+  banca              Banca?             @relation(fields: [bancaId], references: [id])
+  questoes           SimuladoQuestao[]
+  resultados         Resultado[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@map("simulados")
+}
+
+model SimuladoQuestao {
+  id         String   @id @default(cuid())
+  simuladoId String
+  questaoId  String
+  ordem      Int
+  simulado   Simulado @relation(fields: [simuladoId], references: [id], onDelete: Cascade)
+  questao    Questao  @relation(fields: [questaoId], references: [id], onDelete: Cascade)
+
+  @@unique([simuladoId, questaoId])
+  @@map("simulado_questoes")
+}
+
+model Resultado {
+  id         String     @id @default(cuid())
+  userId     String
+  simuladoId String
+  acertos    Int
+  erros      Int
+  percentual Float
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  simulado   Simulado   @relation(fields: [simuladoId], references: [id], onDelete: Cascade)
+  respostas  Resposta[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("resultados")
+}
+
+model Resposta {
+  id          String    @id @default(cuid())
+  userId      String
+  questaoId   String
+  resultadoId String
+  alternativa String    @db.VarChar(1)
+  correta     Boolean
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questao     Questao   @relation(fields: [questaoId], references: [id], onDelete: Cascade)
+  resultado   Resultado @relation(fields: [resultadoId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@map("respostas")
+}
