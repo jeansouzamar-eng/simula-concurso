@@ -73,7 +73,7 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <AppShell title="Dashboard do Aluno" eyebrow={`Area do aluno · ${user.nome}`}>
+    <AppShell title="Dashboard do Aluno" eyebrow={`Area do aluno · ${user.nome}`} userName={user.nome}>
       <div className="grid gap-5 md:grid-cols-3">
         {stats.map((stat, index) => {
           const Icon = statIcons[index];

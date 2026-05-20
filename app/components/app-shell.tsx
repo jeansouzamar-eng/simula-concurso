@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Bell, LogOut, Menu, UserRound } from "lucide-react";
 import { Brand } from "./brand";
 
@@ -9,15 +12,42 @@ const navItems = [
   ["Histórico", "/dashboard"],
 ];
 
+function getFirstName(name?: string | null) {
+  return name?.trim().split(/\s+/)[0] || "Aluno";
+}
+
 export function AppShell({
   title,
   eyebrow,
+  userName,
   children,
 }: {
   title: string;
   eyebrow: string;
+  userName?: string | null;
   children: React.ReactNode;
 }) {
+  const [resolvedName, setResolvedName] = useState(userName ?? "");
+  const firstName = getFirstName(resolvedName);
+
+  useEffect(() => {
+    if (userName) {
+      return;
+    }
+
+    async function loadUser() {
+      try {
+        const response = await fetch("/api/auth/me");
+        const data = await response.json();
+        setResolvedName(data.user?.nome ?? "");
+      } catch {
+        setResolvedName("");
+      }
+    }
+
+    loadUser();
+  }, [userName]);
+
   return (
     <main className="min-h-screen text-slate-50">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#061421]/85 backdrop-blur-xl">
@@ -39,7 +69,7 @@ export function AppShell({
               <Bell size={18} />
             </button>
             <button className="hidden h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/8 px-3 text-sm font-bold text-slate-200 transition hover:bg-white/12 sm:inline-flex">
-              <UserRound size={17} /> Ana
+              <UserRound size={17} /> {firstName}
             </button>
             <Link href="/login" className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-400 text-[#061421]" aria-label="Sair">
               <LogOut size={18} />

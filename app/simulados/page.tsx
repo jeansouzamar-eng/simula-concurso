@@ -23,7 +23,7 @@ export default async function SimuladosPage() {
   const reachedFreeLimit = user.plano === "GRATIS" && weeklyCount >= FREE_WEEKLY_SIMULATION_LIMIT;
 
   return (
-    <AppShell title="Selecionar Simulado" eyebrow="Simulados disponiveis">
+    <AppShell title="Selecionar Simulado" eyebrow="Simulados disponiveis" userName={user.nome}>
       <section className="rounded-2xl border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>

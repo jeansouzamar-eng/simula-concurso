@@ -37,7 +37,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
 
   if (!resultado) {
     return (
-      <AppShell title="Resultado indisponivel" eyebrow="Relatorio final">
+      <AppShell title="Resultado indisponivel" eyebrow="Relatorio final" userName={user.nome}>
         <div className="rounded-2xl border border-rose-300/20 bg-rose-300/10 p-8 text-rose-100">
           Resultado nao encontrado ou sem permissao de acesso.
         </div>
@@ -46,7 +46,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <AppShell title="Resultado do Simulado" eyebrow={resultado.simulado.titulo}>
+    <AppShell title="Resultado do Simulado" eyebrow={resultado.simulado.titulo} userName={user.nome}>
       <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
         <section className="rounded-2xl border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur">
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
