@@ -12,6 +12,7 @@ import {
   GraduationCap,
   LineChart,
   LockKeyhole,
+  MessageCircle,
   MessageCircleQuestion,
   PlayCircle,
   ShieldCheck,
@@ -121,9 +122,24 @@ const faqs = [
   ["Os resultados mostram onde devo estudar?", "Sim. O relatório destaca matérias críticas, tempo por questão e prioridade de revisão."],
 ];
 
+const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+const whatsappUrl = whatsappNumber
+  ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`
+  : "https://wa.me/";
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden text-slate-50">
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Falar no WhatsApp"
+        className="fixed bottom-5 right-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-emerald-400 text-[#061421] shadow-[0_18px_55px_rgba(37,211,142,0.32)] transition hover:-translate-y-1 hover:bg-emerald-300"
+      >
+        <MessageCircle size={27} />
+      </a>
+
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#061421]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
           <a href="#" className="flex items-center gap-3 font-bold tracking-tight">
