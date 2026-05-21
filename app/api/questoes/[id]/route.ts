@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
-import { apiError } from "../../../../lib/api";
+import { apiError, badRequest } from "../../../../lib/api";
 import { requireAdmin } from "../../../../lib/auth";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -8,6 +8,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await requireAdmin();
     const { id } = await params;
     const body = await request.json();
+
+    if (body.alternativaCorreta && !["A", "B", "C", "D"].includes(body.alternativaCorreta)) {
+      return badRequest("Alternativa correta deve ser A, B, C ou D.");
+    }
+
+    if (body.dificuldade && !["FACIL", "MEDIA", "DIFICIL"].includes(body.dificuldade)) {
+      return badRequest("Dificuldade invalida.");
+    }
 
     const questao = await prisma.questao.update({
       where: { id },

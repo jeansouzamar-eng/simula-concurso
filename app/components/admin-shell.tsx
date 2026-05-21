@@ -4,17 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
-  Bell,
   BookOpen,
   Building2,
   ClipboardList,
   FileQuestion,
   LayoutDashboard,
-  LogOut,
   Menu,
   Users,
 } from "lucide-react";
 import { Brand } from "./brand";
+import { LogoutButton } from "./logout-button";
 
 const adminMenu = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -90,16 +89,11 @@ export function AdminShell({
               <h1 className="mt-1 text-2xl font-black text-white sm:text-3xl">{title}</h1>
             </div>
             <div className="flex items-center gap-2">
-              <button className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/8 text-slate-200 transition hover:bg-white/12" aria-label="Notificacoes">
-                <Bell size={18} />
-              </button>
               <div className="hidden rounded-lg border border-white/10 bg-white/8 px-4 py-2 sm:block">
-                <p className="text-sm font-black text-white">Carla Admin</p>
+                <p className="text-sm font-black text-white">Admin</p>
                 <p className="text-xs text-slate-400">Administrador</p>
               </div>
-              <Link href="/login" className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-400 text-[#061421]" aria-label="Sair">
-                <LogOut size={18} />
-              </Link>
+              <LogoutButton />
             </div>
           </div>
         </header>

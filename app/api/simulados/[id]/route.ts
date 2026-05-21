@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
-import { apiError } from "../../../../lib/api";
+import { apiError, badRequest } from "../../../../lib/api";
 import { requireAdmin, requireAuth } from "../../../../lib/auth";
 import { canUserStartSimulation } from "../../../../lib/plans";
 
@@ -60,6 +60,18 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const body = await request.json();
     const questaoIds = Array.isArray(body.questaoIds) ? body.questaoIds : undefined;
+
+    if (body.nivel && !["FACIL", "INTERMEDIARIO", "AVANCADO"].includes(body.nivel)) {
+      return badRequest("Nivel invalido.");
+    }
+
+    if (body.tempoLimite && Number(body.tempoLimite) < 1) {
+      return badRequest("Tempo limite deve ser maior que zero.");
+    }
+
+    if (body.quantidadeQuestoes && Number(body.quantidadeQuestoes) < 1) {
+      return badRequest("Quantidade deve ser maior que zero.");
+    }
 
     const simulado = await prisma.$transaction(async (tx) => {
       if (questaoIds) {

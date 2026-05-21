@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { Check, Pencil, X } from "lucide-react";
+import { Check, Pencil, Search, X } from "lucide-react";
 
 type AdminUser = {
   id: string;
@@ -16,6 +16,8 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
   const router = useRouter();
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [plan, setPlan] = useState<"GRATIS" | "PREMIUM">("GRATIS");
+  const [type, setType] = useState<"ALUNO" | "ADMIN">("ALUNO");
+  const [search, setSearch] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,9 +25,17 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
   function startEditing(user: AdminUser) {
     setEditingUser(user);
     setPlan(user.plano);
+    setType(user.tipo);
     setMessage("");
     setError("");
   }
+
+  const filteredUsers = users.filter((user) =>
+    [user.nome, user.email, user.plano, user.tipo]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.trim().toLowerCase()),
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +51,7 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
     const response = await fetch(`/api/usuarios/${editingUser.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plano: plan }),
+      body: JSON.stringify({ plano: plan, tipo: type }),
     });
     const data = await response.json();
     setLoading(false);
@@ -73,17 +83,30 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
               <p className="mt-1 text-sm text-slate-400">{editingUser.email}</p>
             </div>
 
-            <label className="block">
-              <span className="text-sm font-bold text-slate-200">Plano</span>
-              <select
-                value={plan}
-                onChange={(event) => setPlan(event.target.value as "GRATIS" | "PREMIUM")}
-                className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15"
-              >
-                <option value="GRATIS">Gratis</option>
-                <option value="PREMIUM">Premium</option>
-              </select>
-            </label>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+              <label className="block">
+                <span className="text-sm font-bold text-slate-200">Plano</span>
+                <select
+                  value={plan}
+                  onChange={(event) => setPlan(event.target.value as "GRATIS" | "PREMIUM")}
+                  className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15"
+                >
+                  <option value="GRATIS">Gratis</option>
+                  <option value="PREMIUM">Premium</option>
+                </select>
+              </label>
+              <label className="block">
+                <span className="text-sm font-bold text-slate-200">Tipo</span>
+                <select
+                  value={type}
+                  onChange={(event) => setType(event.target.value as "ALUNO" | "ADMIN")}
+                  className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15"
+                >
+                  <option value="ALUNO">Aluno</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </label>
+            </div>
 
             {error && <p className="rounded-lg border border-rose-300/25 bg-rose-300/10 px-4 py-3 text-sm text-rose-100">{error}</p>}
 
@@ -106,7 +129,7 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
           </form>
         ) : (
           <div className="mt-6 rounded-lg border border-white/10 bg-[#061421]/55 p-5 text-sm leading-6 text-slate-300">
-            Clique no icone de editar ao lado de um usuario para liberar ou remover o Premium.
+            Clique no icone de editar ao lado de um usuario para alterar plano ou permissao administrativa.
           </div>
         )}
 
@@ -118,6 +141,16 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
           <h2 className="text-2xl font-black text-white">Usuarios</h2>
           <p className="mt-2 text-sm text-slate-300">Altere o plano de alunos cadastrados.</p>
         </div>
+
+        <label className="mt-5 flex h-12 items-center gap-3 rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-slate-300">
+          <Search size={18} />
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar"
+            className="w-full bg-transparent text-white outline-none placeholder:text-slate-500"
+          />
+        </label>
 
         <div className="mt-6 overflow-x-auto rounded-lg border border-white/10">
           <table className="w-full min-w-[42rem] border-collapse text-left text-sm">
@@ -131,7 +164,7 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <tr key={user.id} className="border-t border-white/10">
                   <td className="px-4 py-4 font-bold text-white">{user.nome}</td>
                   <td className="px-4 py-4 text-slate-200">{user.email}</td>
@@ -153,6 +186,13 @@ export function AdminUsersManager({ users }: { users: AdminUser[] }) {
                   </td>
                 </tr>
               ))}
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
+                    Nenhum usuario encontrado.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

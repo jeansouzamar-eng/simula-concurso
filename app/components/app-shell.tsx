@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bell, LogOut, Menu, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { Brand } from "./brand";
+import { LogoutButton } from "./logout-button";
 
 const navItems = [
   ["Dashboard", "/dashboard"],
@@ -65,18 +66,10 @@ export function AppShell({
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <button className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/8 text-slate-200 transition hover:bg-white/12" aria-label="Notificações">
-              <Bell size={18} />
-            </button>
-            <button className="hidden h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/8 px-3 text-sm font-bold text-slate-200 transition hover:bg-white/12 sm:inline-flex">
+            <Link href="/dashboard" className="hidden h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/8 px-3 text-sm font-bold text-slate-200 transition hover:bg-white/12 sm:inline-flex">
               <UserRound size={17} /> {firstName}
-            </button>
-            <Link href="/login" className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-400 text-[#061421]" aria-label="Sair">
-              <LogOut size={18} />
             </Link>
-            <button className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/8 text-slate-200 md:hidden" aria-label="Menu">
-              <Menu size={18} />
-            </button>
+            <LogoutButton />
           </div>
         </div>
       </header>

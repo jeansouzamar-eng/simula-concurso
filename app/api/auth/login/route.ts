@@ -13,7 +13,8 @@ export async function POST(request: Request) {
       return badRequest("Email e senha sao obrigatorios.");
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     if (!user) {
       return NextResponse.json({ error: "Credenciais invalidas." }, { status: 401 });

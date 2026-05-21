@@ -1,5 +1,5 @@
-import { AdminCrud } from "../../components/admin-crud";
 import { AdminShell } from "../../components/admin-shell";
+import { AdminSimpleEntityManager } from "../../components/admin-simple-entity-manager";
 import { prisma } from "../../../lib/prisma";
 import { requireAdmin } from "../../../lib/auth";
 
@@ -14,17 +14,15 @@ export default async function AdminBoardsPage() {
 
   return (
     <AdminShell title="Bancas" eyebrow="CRUD de bancas">
-      <AdminCrud
+      <AdminSimpleEntityManager
         title="Cadastrar banca"
         description="Cadastre organizadoras para classificar questoes e simulados."
-        fields={[{ label: "Nome da banca", placeholder: "Ex: FGV" }]}
-        columns={[
-          { key: "name", label: "Nome da banca" },
-          { key: "simulations", label: "Simulados vinculados" },
-        ]}
-        rows={boards.map((board) => ({
-          name: board.nome,
-          simulations: board._count.simulados,
+        endpoint="/api/bancas"
+        countLabel="Simulados vinculados"
+        entities={boards.map((board) => ({
+          id: board.id,
+          nome: board.nome,
+          count: board._count.simulados,
         }))}
       />
     </AdminShell>

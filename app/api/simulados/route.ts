@@ -50,6 +50,18 @@ export async function POST(request: Request) {
       return badRequest("Titulo, descricao, tempo limite, materia e quantidade sao obrigatorios.");
     }
 
+    if (!["FACIL", "INTERMEDIARIO", "AVANCADO"].includes(nivel)) {
+      return badRequest("Nivel invalido.");
+    }
+
+    if (Number(tempoLimite) < 1 || Number(quantidadeQuestoes) < 1) {
+      return badRequest("Tempo limite e quantidade devem ser maiores que zero.");
+    }
+
+    if (!Array.isArray(questaoIds)) {
+      return badRequest("Questoes invalidas.");
+    }
+
     const simulado = await prisma.simulado.create({
       data: {
         titulo,

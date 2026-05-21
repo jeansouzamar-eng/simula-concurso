@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight,
-  BarChart3,
   Check,
   ChevronRight,
   Clock3,
@@ -20,7 +20,6 @@ import {
   Star,
   Target,
   Trophy,
-  Users,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
@@ -142,16 +141,16 @@ export default function Home() {
 
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#061421]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-          <a href="#" className="flex items-center gap-3 font-bold tracking-tight">
+          <Link href="/" className="flex items-center gap-3 font-bold tracking-tight">
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-400 text-[#061421]">
               <GraduationCap size={22} />
             </span>
             <span className="text-lg">Simula Concurso</span>
-          </a>
+          </Link>
           <div className="hidden items-center gap-8 text-sm text-slate-300 md:flex">
             <a href="#beneficios" className="hover:text-white">Benefícios</a>
-            <a href="#planos" className="hover:text-white">Planos</a>
-            <a href="#faq" className="hover:text-white">FAQ</a>
+            <a href="/planos" className="hover:text-white">Planos</a>
+            <a href="/faq" className="hover:text-white">FAQ</a>
           </div>
           <div className="flex items-center gap-2">
             <a
@@ -309,7 +308,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a className={`mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg font-bold transition hover:-translate-y-1 ${plan.featured ? "bg-emerald-400 text-[#061421] hover:bg-emerald-300" : "bg-[#061421] text-white"}`} href={plan.featured ? "/cadastro" : "/simulados"}>
+                <a className={`mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg font-bold transition hover:-translate-y-1 ${plan.featured ? "bg-emerald-400 text-[#061421] hover:bg-emerald-300" : "bg-[#061421] text-white"}`} href={plan.featured ? "/planos" : plan.name === "Equipe" ? "/contato" : "/cadastro"}>
                   {plan.cta} <ArrowRight size={18} />
                 </a>
               </motion.article>
@@ -365,10 +364,13 @@ export default function Home() {
             </div>
             <p className="mt-2 text-sm text-slate-400">Simulados, métricas e estratégia para concursos públicos.</p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <span className="inline-flex items-center gap-2 text-sm text-slate-300"><Users size={16} /> Comunidade ativa</span>
-            <span className="inline-flex items-center gap-2 text-sm text-slate-300"><BarChart3 size={16} /> Dados em tempo real</span>
-            <span className="inline-flex items-center gap-2 text-sm text-slate-300"><LockKeyhole size={16} /> Ambiente seguro</span>
+          <div className="flex flex-wrap gap-4 text-sm text-slate-300">
+            <a href="/sobre" className="hover:text-white">Sobre</a>
+            <a href="/planos" className="hover:text-white">Planos</a>
+            <a href="/faq" className="hover:text-white">FAQ</a>
+            <a href="/contato" className="hover:text-white">Contato</a>
+            <a href="/termos" className="hover:text-white">Termos</a>
+            <a href="/privacidade" className="hover:text-white">Privacidade</a>
           </div>
         </div>
       </footer>

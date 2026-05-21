@@ -1,5 +1,5 @@
-import { AdminCrud } from "../../components/admin-crud";
 import { AdminShell } from "../../components/admin-shell";
+import { AdminSimpleEntityManager } from "../../components/admin-simple-entity-manager";
 import { prisma } from "../../../lib/prisma";
 import { requireAdmin } from "../../../lib/auth";
 
@@ -14,17 +14,15 @@ export default async function AdminSubjectsPage() {
 
   return (
     <AdminShell title="Materias" eyebrow="CRUD de materias">
-      <AdminCrud
+      <AdminSimpleEntityManager
         title="Cadastrar materia"
         description="Organize as disciplinas usadas em questoes e simulados."
-        fields={[{ label: "Nome da materia", placeholder: "Ex: Direito Administrativo" }]}
-        columns={[
-          { key: "name", label: "Nome da materia" },
-          { key: "questions", label: "Questoes vinculadas" },
-        ]}
-        rows={subjects.map((subject) => ({
-          name: subject.nome,
-          questions: subject._count.questoes,
+        endpoint="/api/materias"
+        countLabel="Questoes vinculadas"
+        entities={subjects.map((subject) => ({
+          id: subject.id,
+          nome: subject.nome,
+          count: subject._count.questoes,
         }))}
       />
     </AdminShell>

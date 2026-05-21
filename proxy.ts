@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE, verifyAuthToken } from "./lib/jwt";
 
-const protectedRoutes = ["/dashboard", "/simulado", "/simulados", "/resultado", "/planos"];
+const protectedRoutes = ["/dashboard", "/simulado", "/simulados", "/resultado"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -33,5 +33,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/simulado/:path*", "/simulados/:path*", "/resultado/:path*", "/planos/:path*", "/admin/:path*"],
+  matcher: ["/dashboard/:path*", "/simulado/:path*", "/simulados/:path*", "/resultado/:path*", "/admin/:path*"],
 };

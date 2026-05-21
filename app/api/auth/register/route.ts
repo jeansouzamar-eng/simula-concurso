@@ -13,7 +13,8 @@ export async function POST(request: Request) {
       return badRequest("Nome, email e senha sao obrigatorios.");
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     if (existingUser) {
       return NextResponse.json({ error: "Email ja cadastrado." }, { status: 409 });
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
 
     const senhaHash = await bcrypt.hash(senha, 10);
     const user = await prisma.user.create({
-      data: { nome, email, senhaHash, tipo: "ALUNO", plano: "GRATIS" },
+      data: { nome, email: normalizedEmail, senhaHash, tipo: "ALUNO", plano: "GRATIS" },
       select: { id: true, nome: true, email: true, tipo: true, plano: true },
     });
 

@@ -7,16 +7,21 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   try {
     await requireAdmin();
     const { id } = await params;
-    const { plano } = await request.json();
+    const { plano, tipo } = await request.json();
 
     if (plano !== "GRATIS" && plano !== "PREMIUM") {
       return badRequest("Plano invalido.");
+    }
+
+    if (tipo !== "ALUNO" && tipo !== "ADMIN") {
+      return badRequest("Tipo de usuario invalido.");
     }
 
     const user = await prisma.user.update({
       where: { id },
       data: {
         plano,
+        tipo,
         premiumAt: plano === "PREMIUM" ? new Date() : null,
       },
       select: {

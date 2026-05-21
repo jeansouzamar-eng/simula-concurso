@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Clock3, Flag, ListChecks } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, Flag, ListChecks } from "lucide-react";
 import { AppShell } from "../../components/app-shell";
 
 type Question = {
@@ -38,6 +38,7 @@ export function SimuladoClient({ simuladoId }: { simuladoId: string }) {
   const [simulado, setSimulado] = useState<Simulation | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [markedForReview, setMarkedForReview] = useState<Record<string, boolean>>({});
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [loading, setLoading] = useState(true);
   const [finishing, setFinishing] = useState(false);
@@ -194,10 +195,32 @@ export function SimuladoClient({ simuladoId }: { simuladoId: string }) {
           </div>
 
           <div className="mt-8 flex flex-col justify-between gap-3 sm:flex-row">
-            <button className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/8 px-5 font-bold text-white transition hover:bg-white/12">
-              <Flag size={18} /> Marcar para revisar
+            <button
+              type="button"
+              onClick={() =>
+                setMarkedForReview((current) => ({
+                  ...current,
+                  [currentQuestion.id]: !current[currentQuestion.id],
+                }))
+              }
+              className={`inline-flex h-12 items-center justify-center gap-2 rounded-lg border px-5 font-bold transition ${
+                markedForReview[currentQuestion.id]
+                  ? "border-amber-300/40 bg-amber-300/15 text-amber-100"
+                  : "border-white/10 bg-white/8 text-white hover:bg-white/12"
+              }`}
+            >
+              <Flag size={18} /> {markedForReview[currentQuestion.id] ? "Revisar depois" : "Marcar para revisar"}
             </button>
             <div className="flex flex-col gap-3 sm:flex-row">
+              {currentIndex > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setCurrentIndex((index) => index - 1)}
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/8 px-5 font-bold text-white transition hover:bg-white/12"
+                >
+                  <ArrowLeft size={18} /> Voltar
+                </button>
+              )}
               {currentIndex < questions.length - 1 && (
                 <button
                   type="button"
@@ -231,6 +254,8 @@ export function SimuladoClient({ simuladoId }: { simuladoId: string }) {
                 className={`grid aspect-square place-items-center rounded-md text-xs font-black ${
                   index === currentIndex
                     ? "bg-white text-[#061421]"
+                    : markedForReview[item.id]
+                      ? "bg-amber-300 text-[#061421]"
                     : answers[item.id]
                       ? "bg-emerald-400 text-[#061421]"
                       : "bg-white/10 text-slate-400"

@@ -20,6 +20,10 @@ export default function PlansPage() {
     setLoading(false);
 
     if (!response.ok) {
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       setMessage(data.error ?? "Nao foi possivel iniciar o pagamento.");
       return;
     }
