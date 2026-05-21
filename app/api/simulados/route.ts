@@ -10,6 +10,7 @@ export async function GET() {
       include: {
         materia: true,
         banca: true,
+        concurso: true,
         questoes: {
           include: {
             questao: {
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
       nivel = "INTERMEDIARIO",
       materiaId,
       bancaId,
+      concursoId,
       quantidadeQuestoes,
       questaoIds = [],
     } = body;
@@ -71,6 +73,7 @@ export async function POST(request: Request) {
         isPremium: Boolean(body.isPremium),
         materiaId,
         bancaId: bancaId || null,
+        concursoId: concursoId || null,
         quantidadeQuestoes: Number(quantidadeQuestoes),
         questoes: {
           create: questaoIds.map((questaoId: string, index: number) => ({
@@ -82,6 +85,7 @@ export async function POST(request: Request) {
       include: {
         materia: true,
         banca: true,
+        concurso: true,
         questoes: { include: { questao: true } },
       },
     });

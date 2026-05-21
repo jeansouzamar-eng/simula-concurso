@@ -16,8 +16,10 @@ type Simulation = {
   isPremium: boolean;
   materiaId: string;
   bancaId: string | null;
+  concursoId: string | null;
   materia: Option;
   banca: Option | null;
+  concurso: Option | null;
   questoes: Array<{ questaoId: string }>;
 };
 
@@ -30,17 +32,20 @@ const emptyForm = {
   isPremium: "false",
   materiaId: "",
   bancaId: "",
+  concursoId: "",
 };
 
 export function AdminSimulationsManager({
   simulations,
   materias,
   bancas,
+  concursos,
   questions,
 }: {
   simulations: Simulation[];
   materias: Option[];
   bancas: Option[];
+  concursos: Option[];
   questions: QuestionOption[];
 }) {
   const router = useRouter();
@@ -87,6 +92,7 @@ export function AdminSimulationsManager({
       isPremium: String(simulation.isPremium),
       materiaId: simulation.materiaId,
       bancaId: simulation.bancaId ?? "",
+      concursoId: simulation.concursoId ?? "",
     });
     setSelectedQuestions(simulation.questoes.map((item) => item.questaoId));
     setMessage("");
@@ -105,6 +111,7 @@ export function AdminSimulationsManager({
       quantidadeQuestoes: Number(form.quantidadeQuestoes),
       isPremium: form.isPremium === "true",
       bancaId: form.bancaId || null,
+      concursoId: form.concursoId || null,
       questaoIds: selectedQuestions,
     };
 
@@ -152,7 +159,7 @@ export function AdminSimulationsManager({
         <div>
           <h2 className="text-2xl font-black text-white">{editing ? "Editar simulado" : "Cadastrar simulado"}</h2>
           <p className="mt-2 text-sm leading-6 text-slate-300">
-            Monte simulados com tempo, nivel, materia, banca e questoes vinculadas.
+            Monte simulados com concurso policial, tempo, nivel, materia, banca e questoes vinculadas.
           </p>
         </div>
 
@@ -196,6 +203,13 @@ export function AdminSimulationsManager({
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="text-sm font-bold text-slate-200">Concurso</span>
+              <select value={form.concursoId} onChange={(event) => updateField("concursoId", event.target.value)} className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15">
+                <option value="">Sem concurso</option>
+                {concursos.map((concurso) => <option key={concurso.id} value={concurso.id}>{concurso.nome}</option>)}
+              </select>
+            </label>
             <label className="block">
               <span className="text-sm font-bold text-slate-200">Materia</span>
               <select value={form.materiaId} onChange={(event) => updateField("materiaId", event.target.value)} className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15">
@@ -273,6 +287,7 @@ export function AdminSimulationsManager({
                 <th className="px-4 py-3 font-black">Titulo</th>
                 <th className="px-4 py-3 font-black">Tempo</th>
                 <th className="px-4 py-3 font-black">Nivel</th>
+                <th className="px-4 py-3 font-black">Concurso</th>
                 <th className="px-4 py-3 font-black">Materia</th>
                 <th className="px-4 py-3 font-black">Questoes</th>
                 <th className="px-4 py-3 font-black">Acoes</th>
@@ -284,6 +299,7 @@ export function AdminSimulationsManager({
                   <td className="px-4 py-4 font-bold text-white">{simulation.titulo}</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.tempoLimite} min</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.nivel}</td>
+                  <td className="px-4 py-4 text-slate-200">{simulation.concurso?.nome ?? "-"}</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.materia.nome}</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.questoes.length || simulation.quantidadeQuestoes}</td>
                   <td className="px-4 py-4">

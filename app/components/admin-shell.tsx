@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Menu,
   Users,
+  Shield,
 } from "lucide-react";
 import { Brand } from "./brand";
 import { LogoutButton } from "./logout-button";
@@ -19,6 +20,7 @@ const adminMenu = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Questoes", href: "/admin/questoes", icon: FileQuestion },
   { label: "Simulados", href: "/admin/simulados", icon: ClipboardList },
+  { label: "Concursos", href: "/admin/concursos", icon: Shield },
   { label: "Materias", href: "/admin/materias", icon: BookOpen },
   { label: "Bancas", href: "/admin/bancas", icon: Building2 },
   { label: "Usuarios", href: "/admin/usuarios", icon: Users },

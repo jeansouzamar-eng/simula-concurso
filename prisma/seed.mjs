@@ -31,12 +31,33 @@ async function main() {
     },
   });
 
+  const concursos = [
+    "Polícia Federal",
+    "Polícia Rodoviária Federal",
+    "Polícia Civil",
+    "Polícia Militar",
+    "Polícia Penal",
+    "Guarda Municipal",
+  ];
+
+  for (const nome of concursos) {
+    await prisma.concurso.upsert({
+      where: { nome },
+      update: {},
+      create: { nome },
+    });
+  }
+
   const materias = [
-    "Portugues",
-    "Direito Administrativo",
+    "Português",
+    "Raciocínio Lógico",
+    "Informática",
     "Direito Constitucional",
-    "Raciocinio Logico",
-    "Informatica",
+    "Direito Administrativo",
+    "Direito Penal",
+    "Processo Penal",
+    "Direitos Humanos",
+    "Criminologia",
   ];
 
   for (const nome of materias) {
@@ -47,7 +68,7 @@ async function main() {
     });
   }
 
-  const bancas = ["FGV", "Cebraspe", "Cesgranrio", "FCC", "Vunesp"];
+  const bancas = ["Cebraspe", "FGV", "Vunesp", "IBFC", "AOCP"];
 
   for (const nome of bancas) {
     await prisma.banca.upsert({
@@ -57,15 +78,18 @@ async function main() {
     });
   }
 
-  const portugues = await prisma.materia.findUniqueOrThrow({ where: { nome: "Portugues" } });
+  const portugues = await prisma.materia.findUniqueOrThrow({ where: { nome: "Português" } });
   const administrativo = await prisma.materia.findUniqueOrThrow({
     where: { nome: "Direito Administrativo" },
   });
   const constitucional = await prisma.materia.findUniqueOrThrow({
     where: { nome: "Direito Constitucional" },
   });
-  const logico = await prisma.materia.findUniqueOrThrow({ where: { nome: "Raciocinio Logico" } });
+  const logico = await prisma.materia.findUniqueOrThrow({ where: { nome: "Raciocínio Lógico" } });
   const fgv = await prisma.banca.findUniqueOrThrow({ where: { nome: "FGV" } });
+  const policiaFederal = await prisma.concurso.findUniqueOrThrow({
+    where: { nome: "Polícia Federal" },
+  });
 
   const questoesBase = [
     {
@@ -157,6 +181,7 @@ async function main() {
         quantidadeQuestoes: questoes.length,
         materiaId: administrativo.id,
         bancaId: fgv.id,
+        concursoId: policiaFederal.id,
         questoes: {
           create: questoes.map((questao, index) => ({
             questaoId: questao.id,
@@ -187,6 +212,7 @@ async function main() {
         quantidadeQuestoes: questoes.length,
         materiaId: administrativo.id,
         bancaId: fgv.id,
+        concursoId: policiaFederal.id,
         questoes: {
           create: questoes.map((questao, index) => ({
             questaoId: questao.id,
@@ -199,6 +225,7 @@ async function main() {
 
   console.log("Seed concluido.");
   console.log(`Admin: ${adminEmail}`);
+  console.log(`Concursos policiais: ${concursos.length}`);
   console.log(`Simulado: ${simulado.titulo}`);
   console.log(`Simulado premium: ${simuladoPremium.titulo}`);
 }

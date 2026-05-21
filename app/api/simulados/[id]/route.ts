@@ -13,6 +13,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       include: {
         materia: true,
         banca: true,
+        concurso: true,
         questoes: {
           orderBy: { ordem: "asc" },
           include: {
@@ -87,6 +88,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           nivel: body.nivel,
           materiaId: body.materiaId,
           bancaId: body.bancaId || null,
+          concursoId: body.concursoId || null,
         quantidadeQuestoes: body.quantidadeQuestoes ? Number(body.quantidadeQuestoes) : undefined,
           isPremium: typeof body.isPremium === "boolean" ? body.isPremium : undefined,
           questoes: questaoIds
@@ -98,7 +100,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
               }
             : undefined,
         },
-        include: { materia: true, banca: true, questoes: true },
+        include: { materia: true, banca: true, concurso: true, questoes: true },
       });
     });
 

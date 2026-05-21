@@ -19,7 +19,7 @@ export function AdminSimpleEntityManager({
 }: {
   title: string;
   description: string;
-  endpoint: "/api/materias" | "/api/bancas";
+  endpoint: "/api/materias" | "/api/bancas" | "/api/concursos";
   countLabel: string;
   entities: Entity[];
 }) {

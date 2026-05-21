@@ -7,13 +7,14 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminSimulationsPage() {
   await requireAdmin();
-  const [simulations, materias, bancas, questions] = await Promise.all([
+  const [simulations, materias, bancas, concursos, questions] = await Promise.all([
     prisma.simulado.findMany({
-      include: { materia: true, banca: true, questoes: true },
+      include: { materia: true, banca: true, concurso: true, questoes: true },
       orderBy: { createdAt: "desc" },
     }),
     prisma.materia.findMany({ orderBy: { nome: "asc" } }),
     prisma.banca.findMany({ orderBy: { nome: "asc" } }),
+    prisma.concurso.findMany({ orderBy: { nome: "asc" } }),
     prisma.questao.findMany({
       include: { materia: true, banca: true },
       orderBy: { createdAt: "desc" },
@@ -26,6 +27,7 @@ export default async function AdminSimulationsPage() {
         simulations={simulations}
         materias={materias}
         bancas={bancas}
+        concursos={concursos}
         questions={questions}
       />
     </AdminShell>
