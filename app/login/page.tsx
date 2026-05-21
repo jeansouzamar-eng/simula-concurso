@@ -56,9 +56,9 @@ export default function LoginPage() {
           <Link href="/cadastro" className="font-bold text-emerald-300 hover:text-emerald-200">
             Criar Conta
           </Link>
-          <a href="#" className="text-slate-300 hover:text-white">
+          <Link href="/esqueci-senha" className="text-slate-300 hover:text-white">
             Esqueci minha senha
-          </a>
+          </Link>
         </div>
 
         {error && <p className="rounded-lg border border-rose-300/25 bg-rose-300/10 px-4 py-3 text-sm text-rose-100">{error}</p>}

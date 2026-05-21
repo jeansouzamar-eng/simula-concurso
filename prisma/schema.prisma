@@ -40,10 +40,24 @@ model User {
   resultados  Resultado[]
   respostas   Resposta[]
   payments    Payment[]
+  passwordResetTokens PasswordResetToken[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 model Payment {

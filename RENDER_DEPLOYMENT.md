@@ -39,6 +39,11 @@ NEXT_PUBLIC_BASE_URL="https://seu-app.onrender.com"
 NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY="APP_USR_SUA_PUBLIC_KEY_DE_PRODUCAO"
 ADMIN_EMAIL="admin@seudominio.com.br"
 ADMIN_PASSWORD="senha_forte_com_12_ou_mais_caracteres"
+SMTP_HOST="smtp.seuprovedor.com"
+SMTP_PORT="587"
+SMTP_USER="usuario_smtp"
+SMTP_PASS="senha_smtp"
+SMTP_FROM="Simula Concurso <nao-responda@seudominio.com.br>"
 ```
 
 Depois do primeiro deploy, copie a URL publica do Render e atualize `NEXT_PUBLIC_BASE_URL`.
@@ -75,10 +80,20 @@ Evento recomendado: `payment`.
 
 O sistema so atualiza o usuario para `PREMIUM` quando o pagamento estiver com status `approved`.
 
-## 6. Checklist
+## 6. Recuperacao de senha
+
+Configure SMTP no Render para o botao "Esqueci minha senha" enviar emails reais.
+
+Exemplos de provedores compativeis: Resend SMTP, Brevo, Mailgun, SendGrid ou SMTP do seu dominio.
+
+A URL enviada no email usa `NEXT_PUBLIC_BASE_URL`, entao mantenha essa variavel com a URL publica atual do Render.
+
+## 7. Checklist
 
 - Cadastro funcionando.
 - Login funcionando.
+- Recuperacao de senha enviando email.
+- Link de redefinicao atualizando a senha.
 - Simulados carregando do banco.
 - Resultado salvando no banco.
 - Plano gratis bloqueando simulados premium.

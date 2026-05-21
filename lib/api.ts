@@ -12,6 +12,10 @@ export function apiError(error: unknown) {
     return NextResponse.json({ error: error.message }, { status: 503 });
   }
 
+  if (error instanceof Error && error.message.includes("SMTP_")) {
+    return NextResponse.json({ error: error.message }, { status: 503 });
+  }
+
   if (process.env.NODE_ENV !== "production") {
     console.error(error);
   }

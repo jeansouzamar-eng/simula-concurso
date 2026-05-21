@@ -137,12 +137,20 @@ export default function Home() {
             <a href="#planos" className="hover:text-white">Planos</a>
             <a href="#faq" className="hover:text-white">FAQ</a>
           </div>
-          <a
-            href="/cadastro"
-            className="inline-flex h-11 items-center gap-2 rounded-lg bg-emerald-400 px-4 text-sm font-bold text-[#061421] shadow-[0_16px_40px_rgba(37,211,142,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-300"
-          >
-            Criar Conta <ArrowRight size={16} />
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="/login"
+              className="hidden h-11 items-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/12 sm:inline-flex"
+            >
+              Entrar
+            </a>
+            <a
+              href="/cadastro"
+              className="inline-flex h-11 items-center gap-2 rounded-lg bg-emerald-400 px-4 text-sm font-bold text-[#061421] shadow-[0_16px_40px_rgba(37,211,142,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-300"
+            >
+              Criar Conta <ArrowRight size={16} />
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -165,6 +173,9 @@ export default function Home() {
             <motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a className="inline-flex h-13 items-center justify-center gap-2 rounded-lg bg-emerald-400 px-6 font-bold text-[#061421] shadow-[0_20px_60px_rgba(37,211,142,0.3)] transition hover:-translate-y-1 hover:bg-emerald-300" href="/cadastro">
                 Criar Conta <ChevronRight size={18} />
+              </a>
+              <a className="inline-flex h-13 items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-6 font-bold text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/12" href="/login">
+                <LockKeyhole size={18} /> Entrar
               </a>
               <a className="inline-flex h-13 items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-6 font-bold text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/12" href="/simulados">
                 <PlayCircle size={18} /> Fazer Simulado
