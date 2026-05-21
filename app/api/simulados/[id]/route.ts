@@ -13,7 +13,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       include: {
         materia: true,
         banca: true,
-        concurso: true,
+        concursos: { include: { concurso: true } },
         questoes: {
           orderBy: { ordem: "asc" },
           include: {
@@ -61,6 +61,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const body = await request.json();
     const questaoIds = Array.isArray(body.questaoIds) ? body.questaoIds : undefined;
+    const concursoIds = Array.isArray(body.concursoIds) ? body.concursoIds : undefined;
 
     if (body.nivel && !["FACIL", "INTERMEDIARIO", "AVANCADO"].includes(body.nivel)) {
       return badRequest("Nivel invalido.");
@@ -78,6 +79,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       if (questaoIds) {
         await tx.simuladoQuestao.deleteMany({ where: { simuladoId: id } });
       }
+      if (concursoIds) {
+        await tx.simuladoConcurso.deleteMany({ where: { simuladoId: id } });
+      }
 
       return tx.simulado.update({
         where: { id },
@@ -88,7 +92,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           nivel: body.nivel,
           materiaId: body.materiaId,
           bancaId: body.bancaId || null,
-          concursoId: body.concursoId || null,
+          concursos: concursoIds
+            ? {
+                create: concursoIds.map((concursoId: string) => ({ concursoId })),
+              }
+            : undefined,
         quantidadeQuestoes: body.quantidadeQuestoes ? Number(body.quantidadeQuestoes) : undefined,
           isPremium: typeof body.isPremium === "boolean" ? body.isPremium : undefined,
           questoes: questaoIds
@@ -100,7 +108,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
               }
             : undefined,
         },
-        include: { materia: true, banca: true, concurso: true, questoes: true },
+        include: { materia: true, banca: true, concursos: { include: { concurso: true } }, questoes: true },
       });
     });
 

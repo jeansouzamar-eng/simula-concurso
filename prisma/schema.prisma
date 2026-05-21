@@ -98,7 +98,7 @@ model Banca {
 model Concurso {
   id        String     @id @default(cuid())
   nome      String     @unique
-  simulados Simulado[]
+  simulados SimuladoConcurso[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -137,16 +137,26 @@ model Simulado {
   isPremium          Boolean            @default(false)
   materiaId          String
   bancaId            String?
-  concursoId         String?
   materia            Materia            @relation(fields: [materiaId], references: [id])
   banca              Banca?             @relation(fields: [bancaId], references: [id])
-  concurso           Concurso?          @relation(fields: [concursoId], references: [id])
+  concursos          SimuladoConcurso[]
   questoes           SimuladoQuestao[]
   resultados         Resultado[]
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
   @@map("simulados")
+}
+
+model SimuladoConcurso {
+  id         String    @id @default(cuid())
+  simuladoId String
+  concursoId String
+  simulado   Simulado  @relation(fields: [simuladoId], references: [id], onDelete: Cascade)
+  concurso   Concurso  @relation(fields: [concursoId], references: [id], onDelete: Cascade)
+
+  @@unique([simuladoId, concursoId])
+  @@map("simulado_concursos")
 }
 
 model SimuladoQuestao {

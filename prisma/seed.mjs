@@ -181,7 +181,9 @@ async function main() {
         quantidadeQuestoes: questoes.length,
         materiaId: administrativo.id,
         bancaId: fgv.id,
-        concursoId: policiaFederal.id,
+        concursos: {
+          create: [{ concursoId: policiaFederal.id }],
+        },
         questoes: {
           create: questoes.map((questao, index) => ({
             questaoId: questao.id,
@@ -194,6 +196,19 @@ async function main() {
     await prisma.simulado.update({
       where: { id: simulado.id },
       data: { isPremium: false },
+    });
+    await prisma.simuladoConcurso.upsert({
+      where: {
+        simuladoId_concursoId: {
+          simuladoId: simulado.id,
+          concursoId: policiaFederal.id,
+        },
+      },
+      update: {},
+      create: {
+        simuladoId: simulado.id,
+        concursoId: policiaFederal.id,
+      },
     });
   }
 
@@ -212,13 +227,29 @@ async function main() {
         quantidadeQuestoes: questoes.length,
         materiaId: administrativo.id,
         bancaId: fgv.id,
-        concursoId: policiaFederal.id,
+        concursos: {
+          create: [{ concursoId: policiaFederal.id }],
+        },
         questoes: {
           create: questoes.map((questao, index) => ({
             questaoId: questao.id,
             ordem: index + 1,
           })),
         },
+      },
+    });
+  } else {
+    await prisma.simuladoConcurso.upsert({
+      where: {
+        simuladoId_concursoId: {
+          simuladoId: simuladoPremium.id,
+          concursoId: policiaFederal.id,
+        },
+      },
+      update: {},
+      create: {
+        simuladoId: simuladoPremium.id,
+        concursoId: policiaFederal.id,
       },
     });
   }

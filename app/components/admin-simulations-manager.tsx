@@ -16,10 +16,9 @@ type Simulation = {
   isPremium: boolean;
   materiaId: string;
   bancaId: string | null;
-  concursoId: string | null;
   materia: Option;
   banca: Option | null;
-  concurso: Option | null;
+  concursos: Array<{ concursoId: string; concurso: Option }>;
   questoes: Array<{ questaoId: string }>;
 };
 
@@ -32,7 +31,6 @@ const emptyForm = {
   isPremium: "false",
   materiaId: "",
   bancaId: "",
-  concursoId: "",
 };
 
 export function AdminSimulationsManager({
@@ -51,6 +49,7 @@ export function AdminSimulationsManager({
   const router = useRouter();
   const [editing, setEditing] = useState<Simulation | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [selectedContests, setSelectedContests] = useState<string[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [message, setMessage] = useState("");
@@ -63,7 +62,12 @@ export function AdminSimulationsManager({
       return simulations;
     }
     return simulations.filter((simulation) =>
-      [simulation.titulo, simulation.materia.nome, simulation.banca?.nome ?? ""]
+      [
+        simulation.titulo,
+        simulation.materia.nome,
+        simulation.banca?.nome ?? "",
+        ...simulation.concursos.map((item) => item.concurso.nome),
+      ]
         .join(" ")
         .toLowerCase()
         .includes(term),
@@ -77,6 +81,7 @@ export function AdminSimulationsManager({
   function resetForm() {
     setEditing(null);
     setForm(emptyForm);
+    setSelectedContests([]);
     setSelectedQuestions([]);
     setError("");
   }
@@ -92,8 +97,8 @@ export function AdminSimulationsManager({
       isPremium: String(simulation.isPremium),
       materiaId: simulation.materiaId,
       bancaId: simulation.bancaId ?? "",
-      concursoId: simulation.concursoId ?? "",
     });
+    setSelectedContests(simulation.concursos.map((item) => item.concursoId));
     setSelectedQuestions(simulation.questoes.map((item) => item.questaoId));
     setMessage("");
     setError("");
@@ -111,7 +116,7 @@ export function AdminSimulationsManager({
       quantidadeQuestoes: Number(form.quantidadeQuestoes),
       isPremium: form.isPremium === "true",
       bancaId: form.bancaId || null,
-      concursoId: form.concursoId || null,
+      concursoIds: selectedContests,
       questaoIds: selectedQuestions,
     };
 
@@ -205,10 +210,24 @@ export function AdminSimulationsManager({
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="text-sm font-bold text-slate-200">Concurso</span>
-              <select value={form.concursoId} onChange={(event) => updateField("concursoId", event.target.value)} className="mt-2 h-12 w-full rounded-lg border border-white/10 bg-[#061421]/55 px-4 text-white outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-300/15">
-                <option value="">Sem concurso</option>
-                {concursos.map((concurso) => <option key={concurso.id} value={concurso.id}>{concurso.nome}</option>)}
-              </select>
+              <div className="mt-2 grid max-h-44 gap-2 overflow-y-auto rounded-lg border border-white/10 bg-[#061421]/35 p-3">
+                {concursos.map((concurso) => (
+                  <label key={concurso.id} className="flex items-center gap-3 rounded-md bg-white/8 px-3 py-2 text-sm text-slate-200">
+                    <input
+                      type="checkbox"
+                      checked={selectedContests.includes(concurso.id)}
+                      onChange={(event) => {
+                        setSelectedContests((current) =>
+                          event.target.checked
+                            ? [...current, concurso.id]
+                            : current.filter((id) => id !== concurso.id),
+                        );
+                      }}
+                    />
+                    {concurso.nome}
+                  </label>
+                ))}
+              </div>
             </label>
             <label className="block">
               <span className="text-sm font-bold text-slate-200">Materia</span>
@@ -299,7 +318,9 @@ export function AdminSimulationsManager({
                   <td className="px-4 py-4 font-bold text-white">{simulation.titulo}</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.tempoLimite} min</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.nivel}</td>
-                  <td className="px-4 py-4 text-slate-200">{simulation.concurso?.nome ?? "-"}</td>
+                  <td className="px-4 py-4 text-slate-200">
+                    {simulation.concursos.map((item) => item.concurso.nome).join(", ") || "-"}
+                  </td>
                   <td className="px-4 py-4 text-slate-200">{simulation.materia.nome}</td>
                   <td className="px-4 py-4 text-slate-200">{simulation.questoes.length || simulation.quantidadeQuestoes}</td>
                   <td className="px-4 py-4">

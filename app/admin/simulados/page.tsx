@@ -9,7 +9,7 @@ export default async function AdminSimulationsPage() {
   await requireAdmin();
   const [simulations, materias, bancas, concursos, questions] = await Promise.all([
     prisma.simulado.findMany({
-      include: { materia: true, banca: true, concurso: true, questoes: true },
+      include: { materia: true, banca: true, concursos: { include: { concurso: true } }, questoes: true },
       orderBy: { createdAt: "desc" },
     }),
     prisma.materia.findMany({ orderBy: { nome: "asc" } }),

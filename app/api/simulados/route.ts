@@ -10,7 +10,7 @@ export async function GET() {
       include: {
         materia: true,
         banca: true,
-        concurso: true,
+        concursos: { include: { concurso: true } },
         questoes: {
           include: {
             questao: {
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       nivel = "INTERMEDIARIO",
       materiaId,
       bancaId,
-      concursoId,
+      concursoIds = [],
       quantidadeQuestoes,
       questaoIds = [],
     } = body;
@@ -60,8 +60,8 @@ export async function POST(request: Request) {
       return badRequest("Tempo limite e quantidade devem ser maiores que zero.");
     }
 
-    if (!Array.isArray(questaoIds)) {
-      return badRequest("Questoes invalidas.");
+    if (!Array.isArray(questaoIds) || !Array.isArray(concursoIds)) {
+      return badRequest("Questoes ou concursos invalidos.");
     }
 
     const simulado = await prisma.simulado.create({
@@ -73,7 +73,9 @@ export async function POST(request: Request) {
         isPremium: Boolean(body.isPremium),
         materiaId,
         bancaId: bancaId || null,
-        concursoId: concursoId || null,
+        concursos: {
+          create: concursoIds.map((concursoId: string) => ({ concursoId })),
+        },
         quantidadeQuestoes: Number(quantidadeQuestoes),
         questoes: {
           create: questaoIds.map((questaoId: string, index: number) => ({
@@ -85,7 +87,7 @@ export async function POST(request: Request) {
       include: {
         materia: true,
         banca: true,
-        concurso: true,
+        concursos: { include: { concurso: true } },
         questoes: { include: { questao: true } },
       },
     });
